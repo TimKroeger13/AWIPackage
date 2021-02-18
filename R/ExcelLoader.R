@@ -5,7 +5,7 @@
 #'@param AgeTxtName Age textfile from Bacon with a d.by from 0.25. This is optional.
 #'@param Tables Selecting which table sheets to load.
 #'@param Interpolate Bool whether data should be interpolated or not.
-#'@return Siblake.Load.Excel retruns a List of all interpolatet excel sheets.
+#'@return AWIExcelLoader retruns a List of all interpolatet excel sheets.
 #'@author Tim Kröger
 #'@note This function has only been developed for the Alfred Wegener Institute Helmholtz Centre for Polar and Marine Research and should therefore only be used in combination with their database.
 

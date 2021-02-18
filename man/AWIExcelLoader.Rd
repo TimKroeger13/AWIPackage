@@ -21,7 +21,7 @@ AWIExcelLoader(
 \item{Interpolate}{Bool whether data should be interpolated or not.}
 }
 \value{
-Siblake.Load.Excel retruns a List of all interpolatet excel sheets.
+AWIExcelLoader retruns a List of all interpolatet excel sheets.
 }
 \description{
 Loads an Excel of the AWI database and interpolates it.
