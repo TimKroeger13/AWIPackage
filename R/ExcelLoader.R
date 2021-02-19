@@ -43,7 +43,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(sum(toupper(Tables)=="ORGANIC")>0){
 
-    Organic=suppressMessages(read_excel(path = Excelname,sheet = 2))
+    Organic=suppressMessages(read_excel(path = paste(getwd(),"/",Excelname,sep=""),sheet = 2))
     TempColName=FixExcelRowNames(Organic[6,])
     Organic=Organic[7:dim(Organic)[1],]
     CoreName=toString(DisconnectNameAndDepth(Organic[1,1])[1])
