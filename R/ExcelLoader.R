@@ -13,10 +13,6 @@
 AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element","GrainSize","Mineral","Diatom"),
                           Interpolate=T){
 
-  use_namespace(readxl)
-  use_namespace(stats)
-  use_namespace(vegan)
-
   minInterpolationValue=0
   minInterpolationName=NA
   maxInterpolationValue=Inf
