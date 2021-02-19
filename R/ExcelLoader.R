@@ -1,17 +1,19 @@
-#'Loads an Excel of the AWI database and interpolates it.
+#'AWIExcelLoader
+#'@description Loads an Excel of the AWI database and interpolates it.
 #'@export
-#'@import vegan stats
+#'@import vegan stats readxl
 #'@param Excelname Excel sheet from the AWI database.
 #'@param AgeTxtName Age textfile from Bacon with a d.by from 0.25. This is optional.
 #'@param Tables Selecting which table sheets to load.
-#'@param Interpolate Bool whether data should be interpolated or not.
+#'@param Interpolate Bool indicating whether data should be interpolated or not.
 #'@return AWIExcelLoader retruns a List of all interpolatet excel sheets.
 #'@author Tim Kröger
 #'@note This function has only been developed for the Alfred Wegener Institute Helmholtz Centre for Polar and Marine Research and should therefore only be used in combination with their database.
 
 AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element","GrainSize","Mineral","Diatom"),
-                              Interpolate=T){
+                          Interpolate=T){
 
+  use_namespace(readxl)
   use_namespace(stats)
   use_namespace(vegan)
 
@@ -26,12 +28,18 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   }
 
+  DisconnectNameAndDepth = function(FirstEntry){
+
+    return(read.table(textConnection(toString(FirstEntry))))
+
+  }
+
   if (!is.null(AgeTxtName)){
 
     Age=read.table(AgeTxtName)
     if(!Age[3,1]==0.25){
 
-      warning("      Depth intervals at which ages are calculated is not 0.25!
+      warning("Depth intervals at which ages are calculated is not 0.25!
       Please Change is in the Bacon Model!
       Bacon(core=...,thick=...,d.by = 0.25)")
     }
@@ -42,8 +50,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     Organic=suppressMessages(read_excel(path = Excelname,sheet = 2))
     TempColName=FixExcelRowNames(Organic[6,])
     Organic=Organic[7:dim(Organic)[1],]
-    CoreName=substr(Organic[1,1], 1, 7)
-    Organic[,1]=gsub(CoreName,"",as.matrix(Organic[,1]))
+    CoreName=toString(DisconnectNameAndDepth(Organic[1,1])[1])
+    Organic[,1]=gsub(paste(CoreName," ",sep=""),"",as.matrix(Organic[,1]))
     Organic=suppressWarnings(as.data.frame(matrix(as.numeric(unlist(Organic)),ncol = dim(Organic)[2])))
     TempColName[1]="depth"
     colnames(Organic)=TempColName
@@ -66,8 +74,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     GrainSize=suppressMessages(read_excel(path = Excelname,sheet = 3))
     TempColName=FixExcelRowNames(GrainSize[6,])
     GrainSize=GrainSize[7:dim(GrainSize)[1],]
-    CoreName=substr(GrainSize[1,1], 1, 7)
-    GrainSize[,1]=gsub(CoreName,"",as.matrix(GrainSize[,1]))
+    CoreName=toString(DisconnectNameAndDepth(GrainSize[1,1])[1])
+    GrainSize[,1]=gsub(paste(CoreName," ",sep=""),"",as.matrix(GrainSize[,1]))
     GrainSize=suppressWarnings(as.data.frame(matrix(as.numeric(unlist(GrainSize)),ncol = dim(GrainSize)[2])))
     TempColName[1]="depth"
     colnames(GrainSize)=TempColName
@@ -90,8 +98,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     Element=suppressMessages(read_excel(path = Excelname,sheet = 4))
     TempColName=FixExcelRowNames(Element[5,])
     Element=Element[6:dim(Element)[1],]
-    CoreName=substr(Element[1,1], 1, 7)
-    Element[,1]=gsub(CoreName,"",as.matrix(Element[,1]))
+    CoreName=toString(DisconnectNameAndDepth(Element[1,1])[1])
+    Element[,1]=gsub(paste(CoreName," ",sep=""),"",as.matrix(Element[,1]))
     Element=suppressWarnings(as.data.frame(matrix(as.numeric(unlist(Element)),ncol = dim(Element)[2])))
     TempColName[1]="depth"
     colnames(Element)=TempColName
@@ -117,8 +125,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     Wavename=c("","","",Wavename[4:length(Wavename)])
     TempColName=paste(TempColName,Wavename)
     Mineral=Mineral[7:dim(Mineral)[1],]
-    CoreName=substr(Mineral[2,1], 1, 7)
-    Mineral[,1]=gsub(CoreName,"",as.matrix(Mineral[,1]))
+    CoreName=toString(DisconnectNameAndDepth(Mineral[2,1])[1])
+    Mineral[,1]=gsub(paste(CoreName," ",sep=""),"",as.matrix(Mineral[,1]))
     Mineral=suppressWarnings(as.data.frame(matrix(as.numeric(unlist(Mineral)),ncol = dim(Mineral)[2])))
     TempColName[1]="depth"
     colnames(Mineral)=TempColName
@@ -141,8 +149,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     Diatom=suppressMessages(read_excel(path = Excelname,sheet = 6))
     TempColName=FixExcelRowNames(Diatom[5,])
     Diatom=Diatom[6:dim(Diatom)[1],]
-    CoreName=substr(Diatom[1,1], 1, 7)
-    Diatom[,1]=gsub(CoreName,"",as.matrix(Diatom[,1]))
+    CoreName=toString(DisconnectNameAndDepth(Diatom[1,1])[1])
+    Diatom[,1]=gsub(paste(CoreName," ",sep=""),"",as.matrix(Diatom[,1]))
     Diatom=suppressWarnings(as.data.frame(matrix(as.numeric(unlist(Diatom)),ncol = dim(Diatom)[2])))
     TempColName[1]="depth"
     colnames(Diatom)=TempColName
@@ -162,6 +170,45 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(Interpolate){
 
+    suggestion=T
+    stop=F
+    while(suggestion){
+
+      cat("\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",
+          "\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n")
+
+      cat(sep="","Boarders for the interpolation:",
+          "\n",
+          "\n",
+          "lower interpolation limit set by ",minInterpolationName,
+          "\n",
+          "Value = ",minInterpolationValue,
+          "\n",
+          "\n",
+          "Upper interpolation limit set by ",maxInterpolationName,
+          "\n",
+          "Value = ",maxInterpolationValue,
+          "\n",
+          "\n",
+          "c <- Confrim (Continue script)\n",
+          "s <- stop\n\n"
+      )
+
+      x <- readline(prompt = "confirm data: ")
+
+      if(tolower(x)=="c"){
+
+        suggestion=F
+
+      }
+
+      if(tolower(x)=="s"){
+
+        return()
+
+      }
+    }
+
     InterploationSeqence=seq(from = minInterpolationValue, to = maxInterpolationValue, by = 0.25)
 
     if(sum(toupper(Tables)=="ORGANIC")>0){
@@ -174,8 +221,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
         if(!sum(is.na(Organic[,i]))==dim(Organic)[1]){
 
-        InterApprox=approx(Organic[,1], Organic[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-        Organic.clone[,i]=InterApprox$y
+          InterApprox=approx(Organic[,1], Organic[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
+          Organic.clone[,i]=InterApprox$y
         }else{
 
           Organic.clone[,i]=NA
@@ -196,8 +243,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
         if(!sum(is.na(GrainSize[,i]))==dim(GrainSize)[1]){
 
-        InterApprox=approx(GrainSize[,1], GrainSize[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-        GrainSize.clone[,i]=InterApprox$y
+          InterApprox=approx(GrainSize[,1], GrainSize[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
+          GrainSize.clone[,i]=InterApprox$y
         }else{
 
           GrainSize.clone[,i]=NA
@@ -217,8 +264,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
         if(!sum(is.na(Element[,i]))==dim(Element)[1]){
 
-        InterApprox=approx(Element[,1], Element[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-        Element.clone[,i]=InterApprox$y
+          InterApprox=approx(Element[,1], Element[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
+          Element.clone[,i]=InterApprox$y
         }else{
 
           Element.clone[,i]=NA
@@ -238,8 +285,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
         if(!sum(is.na(Mineral[,i]))==dim(Mineral)[1]){
 
-        InterApprox=approx(Mineral[,1], Mineral[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-        Mineral.clone[,i]=InterApprox$y
+          InterApprox=approx(Mineral[,1], Mineral[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
+          Mineral.clone[,i]=InterApprox$y
         }else{
 
           Mineral.clone[,i]=NA
@@ -259,8 +306,8 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
         if(!sum(is.na(Diatom[,i]))==dim(Diatom)[1]){
 
-        InterApprox=approx(Diatom[,1], Diatom[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-        Diatom.clone[,i]=InterApprox$y
+          InterApprox=approx(Diatom[,1], Diatom[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
+          Diatom.clone[,i]=InterApprox$y
         }else{
 
           Diatom.clone[,i]=NA

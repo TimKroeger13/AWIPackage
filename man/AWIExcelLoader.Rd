@@ -2,7 +2,7 @@
 % Please edit documentation in R/ExcelLoader.R
 \name{AWIExcelLoader}
 \alias{AWIExcelLoader}
-\title{Loads an Excel of the AWI database and interpolates it.}
+\title{AWIExcelLoader}
 \usage{
 AWIExcelLoader(
   Excelname,
@@ -18,7 +18,7 @@ AWIExcelLoader(
 
 \item{Tables}{Selecting which table sheets to load.}
 
-\item{Interpolate}{Bool whether data should be interpolated or not.}
+\item{Interpolate}{Bool indicating whether data should be interpolated or not.}
 }
 \value{
 AWIExcelLoader retruns a List of all interpolatet excel sheets.
