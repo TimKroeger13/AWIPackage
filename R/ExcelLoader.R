@@ -67,7 +67,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(sum(toupper(Tables)=="GRAINSIZE")>0){
 
-    GrainSize=suppressMessages(read_excel(path = Excelname,sheet = 3))
+    GrainSize=suppressMessages(read_excel(path = paste(getwd(),"/",Excelname,sep=""),sheet = 3))
     TempColName=FixExcelRowNames(GrainSize[6,])
     GrainSize=GrainSize[7:dim(GrainSize)[1],]
     CoreName=toString(DisconnectNameAndDepth(GrainSize[1,1])[1])
@@ -91,7 +91,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(sum(toupper(Tables)=="ELEMENT")>0){
 
-    Element=suppressMessages(read_excel(path = Excelname,sheet = 4))
+    Element=suppressMessages(read_excel(path = paste(getwd(),"/",Excelname,sep=""),sheet = 4))
     TempColName=FixExcelRowNames(Element[5,])
     Element=Element[6:dim(Element)[1],]
     CoreName=toString(DisconnectNameAndDepth(Element[1,1])[1])
@@ -115,7 +115,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(sum(toupper(Tables)=="MINERAL")>0){
 
-    Mineral=suppressMessages(read_excel(path = Excelname,sheet = 5))
+    Mineral=suppressMessages(read_excel(path = paste(getwd(),"/",Excelname,sep=""),sheet = 5))
     TempColName=FixExcelRowNames(Mineral[5,])
     Wavename=FixExcelRowNames(Mineral[6,])
     Wavename=c("","","",Wavename[4:length(Wavename)])
@@ -142,7 +142,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(sum(toupper(Tables)=="DIATOM")>0){
 
-    Diatom=suppressMessages(read_excel(path = Excelname,sheet = 6))
+    Diatom=suppressMessages(read_excel(path = paste(getwd(),"/",Excelname,sep=""),sheet = 6))
     TempColName=FixExcelRowNames(Diatom[5,])
     Diatom=Diatom[6:dim(Diatom)[1],]
     CoreName=toString(DisconnectNameAndDepth(Diatom[1,1])[1])
