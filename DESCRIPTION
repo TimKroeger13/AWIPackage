@@ -1,9 +1,9 @@
 Package: AWIPackage
 Type: Package
-Title: RTools used by the Alfred wegner institut.
+Title: RTools used by the Alfred wegner institut
 Version: 0.1.0
 Author: Tim Kröger
-Depends: stats, vegan, readxl
+Depends: stats, vegan, readxl, rlist
 Maintainer: The package maintainer <tim.kroeger@awi.de>
 Description: This function has only been developed for the Alfred Wegener Institute Helmholtz 
     Centre for Polar and Marine Research and should therefore only be used in combination with their database.

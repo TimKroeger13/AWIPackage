@@ -2,16 +2,18 @@
 #'@description Loads an Excel of the AWI database and interpolates it.
 #'@export
 #'@import vegan stats readxl
+#'@importFrom utils read.csv read.table
 #'@param Excelname Excel sheet from the AWI database.
 #'@param AgeTxtName Age textfile from Bacon with a d.by from 0.25. This is optional.
 #'@param Tables Selecting which table sheets to load.
 #'@param Interpolate Bool indicating whether data should be interpolated or not.
+#'@param Suggest Bool indicating the interpolation boarders. When False the user input will be scipt.
 #'@return AWIExcelLoader retruns a List of all interpolatet excel sheets.
 #'@author Tim Kröger
 #'@note This function has only been developed for the Alfred Wegener Institute Helmholtz Centre for Polar and Marine Research and should therefore only be used in combination with their database.
 
 AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element","GrainSize","Mineral","Diatom"),
-                          Interpolate=T){
+                          Interpolate=T, Suggest=T){
 
   minInterpolationValue=0
   minInterpolationName=NA
@@ -166,42 +168,45 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   if(Interpolate){
 
-    suggestion=T
-    stop=F
-    while(suggestion){
+    if (Suggest){
 
-      cat("\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",
-          "\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n")
+      suggestion=T
+      stop=F
+      while(suggestion){
 
-      cat(sep="","Boarders for the interpolation:",
-          "\n",
-          "\n",
-          "lower interpolation limit set by ",minInterpolationName,
-          "\n",
-          "Value = ",minInterpolationValue,
-          "\n",
-          "\n",
-          "Upper interpolation limit set by ",maxInterpolationName,
-          "\n",
-          "Value = ",maxInterpolationValue,
-          "\n",
-          "\n",
-          "c <- Confrim (Continue script)\n",
-          "s <- stop\n\n"
-      )
+        cat("\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",
+            "\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n")
 
-      x <- readline(prompt = "confirm data: ")
+        cat(sep="","Boarders for the interpolation:",
+            "\n",
+            "\n",
+            "lower interpolation limit set by ",minInterpolationName,
+            "\n",
+            "Value = ",minInterpolationValue,
+            "\n",
+            "\n",
+            "Upper interpolation limit set by ",maxInterpolationName,
+            "\n",
+            "Value = ",maxInterpolationValue,
+            "\n",
+            "\n",
+            "c <- Confrim (Continue script)\n",
+            "s <- stop\n\n"
+        )
 
-      if(tolower(x)=="c"){
+        x <- readline(prompt = "confirm data: ")
 
-        suggestion=F
+        if(tolower(x)=="c"){
 
-      }
+          suggestion=F
 
-      if(tolower(x)=="s"){
+        }
 
-        return()
+        if(tolower(x)=="s"){
 
+          return()
+
+        }
       }
     }
 
@@ -316,11 +321,11 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
   out=list()
 
-  out$Diatom=Diatom
-  out$Element=Element
-  out$GrainSize=GrainSize
-  out$Mineral=Mineral
-  out$Organic=Organic
+  if(sum(toupper(Tables)=="DIATOM")>0){out$Diatom=Diatom}
+  if(sum(toupper(Tables)=="ELEMENT")>0){out$Element=Element}
+  if(sum(toupper(Tables)=="GRAINSIZE")>0){out$GrainSize=GrainSize}
+  if(sum(toupper(Tables)=="MINERAL")>0){out$Mineral=Mineral}
+  if(sum(toupper(Tables)=="ORGANIC")>0){out$Organic=Organic}
 
   return(out)
 
