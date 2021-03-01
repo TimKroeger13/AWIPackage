@@ -1,24 +1,17 @@
 #'AWIExcelLoader
 #'@description Loads an Excel of the AWI database and interpolates it.
 #'@export
-#'@import vegan stats readxl
+#'@import compositions vegan readxl
 #'@importFrom utils read.csv read.table
 #'@param Excelname Excel sheet from the AWI database.
 #'@param AgeTxtName Age textfile from Bacon with a d.by from 0.25. This is optional.
 #'@param Tables Selecting which table sheets to load.
-#'@param Interpolate Bool indicating whether data should be interpolated or not.
-#'@param Suggest Bool indicating the interpolation boarders. When False the user input will be scipt.
+#'@param FixFormat standardizes all data so that it is easier to calculate with them in the future.
 #'@return AWIExcelLoader retruns a List of all interpolatet excel sheets.
 #'@author Tim Kröger
 #'@note This function has only been developed for the Alfred Wegener Institute Helmholtz Centre for Polar and Marine Research and should therefore only be used in combination with their database.
 
-AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element","GrainSize","Mineral","Diatom"),
-                          Interpolate=T, Suggest=T){
-
-  minInterpolationValue=0
-  minInterpolationName=NA
-  maxInterpolationValue=Inf
-  maxInterpolationName=NA
+AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element","GrainSize","Mineral","Diatom"),FixFormat=F){
 
   FixExcelRowNames = function(NameRow){
 
@@ -29,6 +22,42 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
   DisconnectNameAndDepth = function(FirstEntry){
 
     return(read.table(textConnection(toString(FirstEntry))))
+
+  }
+
+  DeleteNaRows = function(DataFrame){
+
+    i=0
+
+    while (i<dim(DataFrame)[2]) {
+
+      i=i+1
+
+      if(sum(is.na(DataFrame[,i]))==dim(DataFrame)[1]){
+
+        DataFrame=DataFrame[,-i]
+
+        i=i-1
+
+      }
+    }
+
+    return(DataFrame)
+
+  }
+
+  AddAgges = function(depth){
+
+    Ageresult=array(data = NA, dim = length(depth))
+    Age=read.table(AgeTxtName)
+
+    for (i in 1:length(depth)){
+
+      Ageresult[i]=as.numeric(Age[match(depth[i],Age[,1]),5])
+
+    }
+
+    return(Ageresult)
 
   }
 
@@ -54,17 +83,6 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     TempColName[1]="depth"
     colnames(Organic)=TempColName
 
-    if(Organic[1,1]>minInterpolationValue){
-
-      minInterpolationValue=Organic[1,1]
-      minInterpolationName="Organic"
-    }
-    if(Organic[dim(Organic)[1],1]<maxInterpolationValue){
-
-      maxInterpolationValue=Organic[dim(Organic)[1],1]
-      maxInterpolationName="Organic"
-
-    }
   }
 
   if(sum(toupper(Tables)=="GRAINSIZE")>0){
@@ -78,17 +96,6 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     TempColName[1]="depth"
     colnames(GrainSize)=TempColName
 
-    if(GrainSize[1,1]>minInterpolationValue){
-
-      minInterpolationValue=GrainSize[1,1]
-      minInterpolationName="GrainSize"
-    }
-    if(GrainSize[dim(GrainSize)[1],1]<maxInterpolationValue){
-
-      maxInterpolationValue=GrainSize[dim(GrainSize)[1],1]
-      maxInterpolationName="GrainSize"
-
-    }
   }
 
   if(sum(toupper(Tables)=="ELEMENT")>0){
@@ -102,17 +109,6 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     TempColName[1]="depth"
     colnames(Element)=TempColName
 
-    if(Element[1,1]>minInterpolationValue){
-
-      minInterpolationValue=Element[1,1]
-      minInterpolationName="Element"
-    }
-    if(Element[dim(Element)[1],1]<maxInterpolationValue){
-
-      maxInterpolationValue=Element[dim(Element)[1],1]
-      maxInterpolationName="Element"
-
-    }
   }
 
   if(sum(toupper(Tables)=="MINERAL")>0){
@@ -129,17 +125,6 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     TempColName[1]="depth"
     colnames(Mineral)=TempColName
 
-    if(Mineral[1,1]>minInterpolationValue){
-
-      minInterpolationValue=Mineral[1,1]
-      minInterpolationName="Mineral"
-    }
-    if(Mineral[dim(Mineral)[1],1]<maxInterpolationValue){
-
-      maxInterpolationValue=Mineral[dim(Mineral)[1],1]
-      maxInterpolationName="Mineral"
-
-    }
   }
 
   if(sum(toupper(Tables)=="DIATOM")>0){
@@ -153,170 +138,53 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     TempColName[1]="depth"
     colnames(Diatom)=TempColName
 
-    if(Diatom[1,1]>minInterpolationValue){
+  }
 
-      minInterpolationValue=Diatom[1,1]
-      minInterpolationName="Diatom"
+  if(FixFormat){
+
+    if(sum(toupper(Tables)=="DIATOM")>0){
+
+      Diatom=DeleteNaRows(Diatom)
+      Diatom[,3:dim(Diatom)[2]]=clr(Diatom[,3:dim(Diatom)[2]])
+
     }
-    if(Diatom[dim(Diatom)[1],1]<maxInterpolationValue){
 
-      maxInterpolationValue=Diatom[dim(Diatom)[1],1]
-      maxInterpolationName="Diatom"
+    if(sum(toupper(Tables)=="GRAINSIZE")>0){GrainSize=DeleteNaRows(GrainSize)}
+    if(sum(toupper(Tables)=="MINERAL")>0){Mineral=DeleteNaRows(Mineral)}
+    if(sum(toupper(Tables)=="ORGANIC")>0){Organic=DeleteNaRows(Organic)}
+
+    if(sum(toupper(Tables)=="ELEMENT")>0){
+
+      Element=DeleteNaRows(Element)
+
+      i=1
+
+      while (i<dim(Element)[2]) {
+
+        i=i+1
+
+        if(!grepl("Area",colnames(Element)[i], fixed = TRUE)){
+
+          Element=Element[,-i]
+
+          i=i-1
+
+        }
+      }
+
+      Element[,2:dim(Element)[2]]=clr(Element[,2:dim(Element)[2]])
 
     }
   }
 
-  if(Interpolate){
+  if(!is.null(AgeTxtName)){
 
-    if (Suggest){
+    if(sum(toupper(Tables)=="DIATOM")>0){Diatom[,1]=AddAgges(Diatom[,1])}
+    if(sum(toupper(Tables)=="ELEMENT")>0){Element[,1]=AddAgges(Element[,1])}
+    if(sum(toupper(Tables)=="GRAINSIZE")>0){GrainSize[,1]=AddAgges(GrainSize[,1])}
+    if(sum(toupper(Tables)=="MINERAL")>0){Mineral[,1]=AddAgges(Mineral[,1])}
+    if(sum(toupper(Tables)=="ORGANIC")>0){Organic[,1]=AddAgges(Organic[,1])}
 
-      suggestion=T
-      stop=F
-      while(suggestion){
-
-        cat("\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",
-            "\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n")
-
-        cat(sep="","Boarders for the interpolation:",
-            "\n",
-            "\n",
-            "lower interpolation limit set by ",minInterpolationName,
-            "\n",
-            "Value = ",minInterpolationValue,
-            "\n",
-            "\n",
-            "Upper interpolation limit set by ",maxInterpolationName,
-            "\n",
-            "Value = ",maxInterpolationValue,
-            "\n",
-            "\n",
-            "c <- Confrim (Continue script)\n",
-            "s <- stop\n\n"
-        )
-
-        x <- readline(prompt = "confirm data: ")
-
-        if(tolower(x)=="c"){
-
-          suggestion=F
-
-        }
-
-        if(tolower(x)=="s"){
-
-          return()
-
-        }
-      }
-    }
-
-    InterploationSeqence=seq(from = minInterpolationValue, to = maxInterpolationValue, by = 0.25)
-
-    if(sum(toupper(Tables)=="ORGANIC")>0){
-
-      Organic.clone=matrix(NA,nrow = length(InterploationSeqence),ncol = dim(Organic)[2])
-      Organic.clone[,1]=InterploationSeqence
-      colnames(Organic.clone)=colnames(Organic)
-
-      for(i in 2:dim(Organic)[2]){
-
-        if(!sum(is.na(Organic[,i]))==dim(Organic)[1]){
-
-          InterApprox=approx(Organic[,1], Organic[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-          Organic.clone[,i]=InterApprox$y
-        }else{
-
-          Organic.clone[,i]=NA
-
-        }
-      }
-      Organic=as.data.frame(Organic.clone)
-    }
-
-
-    if(sum(toupper(Tables)=="GRAINSIZE")>0){
-
-      GrainSize.clone=matrix(NA,nrow = length(InterploationSeqence),ncol = dim(GrainSize)[2])
-      GrainSize.clone[,1]=InterploationSeqence
-      colnames(GrainSize.clone)=colnames(GrainSize)
-
-      for(i in 2:dim(GrainSize)[2]){
-
-        if(!sum(is.na(GrainSize[,i]))==dim(GrainSize)[1]){
-
-          InterApprox=approx(GrainSize[,1], GrainSize[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-          GrainSize.clone[,i]=InterApprox$y
-        }else{
-
-          GrainSize.clone[,i]=NA
-
-        }
-      }
-      GrainSize=as.data.frame(GrainSize.clone)
-    }
-
-    if(sum(toupper(Tables)=="ELEMENT")>0){
-
-      Element.clone=matrix(NA,nrow = length(InterploationSeqence),ncol = dim(Element)[2])
-      Element.clone[,1]=InterploationSeqence
-      colnames(Element.clone)=colnames(Element)
-
-      for(i in 2:dim(Element)[2]){
-
-        if(!sum(is.na(Element[,i]))==dim(Element)[1]){
-
-          InterApprox=approx(Element[,1], Element[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-          Element.clone[,i]=InterApprox$y
-        }else{
-
-          Element.clone[,i]=NA
-
-        }
-      }
-      Element=as.data.frame(Element.clone)
-    }
-
-    if(sum(toupper(Tables)=="MINERAL")>0){
-
-      Mineral.clone=matrix(NA,nrow = length(InterploationSeqence),ncol = dim(Mineral)[2])
-      Mineral.clone[,1]=InterploationSeqence
-      colnames(Mineral.clone)=colnames(Mineral)
-
-      for(i in 2:dim(Mineral)[2]){
-
-        if(!sum(is.na(Mineral[,i]))==dim(Mineral)[1]){
-
-          InterApprox=approx(Mineral[,1], Mineral[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-          Mineral.clone[,i]=InterApprox$y
-        }else{
-
-          Mineral.clone[,i]=NA
-
-        }
-      }
-      Mineral=as.data.frame(Mineral.clone)
-    }
-
-    if(sum(toupper(Tables)=="DIATOM")>0){
-
-      Diatom.clone=matrix(NA,nrow = length(InterploationSeqence),ncol = dim(Diatom)[2])
-      Diatom.clone[,1]=InterploationSeqence
-      colnames(Diatom.clone)=colnames(Diatom)
-
-      for(i in 2:dim(Diatom)[2]){
-
-        if(!sum(is.na(Diatom[,i]))==dim(Diatom)[1]){
-
-          InterApprox=approx(Diatom[,1], Diatom[,i], xout = InterploationSeqence, method = "linear",na.rm=T)
-          Diatom.clone[,i]=InterApprox$y
-        }else{
-
-          Diatom.clone[,i]=NA
-
-        }
-      }
-      Diatom=as.data.frame(Diatom.clone)
-    }
   }
 
   out=list()

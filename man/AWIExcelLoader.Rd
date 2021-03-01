@@ -8,8 +8,7 @@ AWIExcelLoader(
   Excelname,
   AgeTxtName = NULL,
   Tables = c("Organic", "Element", "GrainSize", "Mineral", "Diatom"),
-  Interpolate = T,
-  Suggest = T
+  FixFormat = F
 )
 }
 \arguments{
@@ -19,9 +18,7 @@ AWIExcelLoader(
 
 \item{Tables}{Selecting which table sheets to load.}
 
-\item{Interpolate}{Bool indicating whether data should be interpolated or not.}
-
-\item{Suggest}{Bool indicating the interpolation boarders. When False the user input will be scipt.}
+\item{FixFormat}{standardizes all data so that it is easier to calculate with them in the future.}
 }
 \value{
 AWIExcelLoader retruns a List of all interpolatet excel sheets.
