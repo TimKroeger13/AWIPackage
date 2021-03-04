@@ -1,7 +1,7 @@
 Package: AWIPackage
 Type: Package
 Title: RTools used by the Alfred wegner institut
-Version: 0.1.0
+Version: 0.1.1
 Author: Tim Kröger
 Depends: compositions, vegan, readxl
 Maintainer: The package maintainer <tim.kroeger@awi.de>
