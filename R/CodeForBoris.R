@@ -11,15 +11,45 @@ CodeforBoris = function(){
       "\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",'
 
 
-  data=AWIExcelLoader(Excelname = "PG2208_raw_data.xlsx",Suggest = F,Interpolate = F,Tables = c("Diatom"))
+setwd("M:/AWI 2021/Triple B Project")
 
-  Diatom=data$Diatom
+data=AWIExcelLoader(Excelname = "PG2208_raw_data.xlsx",AgeTxtName = "PG2208_77_ages.txt",FixFormat = T)
 
-  data2=AWIExcelLoader(Excelname = "PG2208_raw_data.xlsx",Suggest = F,Interpolate = T,Tables = c("Organic", "Element", "GrainSize", "Mineral"))
+Diatom=data$Diatom
+Element=data$Element
+GrainSize=data$GrainSize
+Mineral=data$Mineral
+Organic=data$Organic
 
-  resampledData=Resample(SourceData = Diatom,Datalist = data2)
 
-  a=resampledData$Mineral
+
+
+Sigdata=read.csv("Sigements.csv")
+
+Faktor1=InterpolateVector(age = Sigdata[,7],data = Sigdata[,8],thick = 50)
+Faktor2=InterpolateVector(age = Mineral[,1],data = Mineral[,3],thick = 50)
+
+VectorCorrelation(x = Faktor1,y = Faktor2,offset = 0)
+
+
+PlotData=VectorCorrelationAll(x=c(Sigdata[,7],Sigdata[,8]),
+                     y=c(Mineral[,1],Mineral[,3]),
+                     thick = 50,
+                     offset = 2000)
+
+
+
+plot(PlotData$main,xaxt="n",type = "p")
+axis(1,seq(1,81,10),names(PlotData$main)[seq(1,81,10)])
+
+
+MasterData=list()
+MasterData$Element=Element[,2:dim(Element)[2]]
+MasterData$GrainSize=GrainSize[,2:dim(GrainSize)[2]]
+MasterData$Mineral=Mineral[,3:dim(Mineral)[2]]
+MasterData$Organic=Organic[,2:dim(Organic)[2]]
+
+
 
   '
   )
