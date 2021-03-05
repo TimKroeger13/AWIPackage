@@ -150,7 +150,12 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     }
 
     if(sum(toupper(Tables)=="GRAINSIZE")>0){GrainSize=DeleteNaRows(GrainSize)}
-    if(sum(toupper(Tables)=="MINERAL")>0){Mineral=DeleteNaRows(Mineral)}
+    if(sum(toupper(Tables)=="MINERAL")>0){
+
+      Mineral=DeleteNaRows(Mineral)
+      Mineral=Mineral[,-2]
+
+      }
     if(sum(toupper(Tables)=="ORGANIC")>0){Organic=DeleteNaRows(Organic)}
 
     if(sum(toupper(Tables)=="ELEMENT")>0){

@@ -10,7 +10,6 @@ CodeforBoris = function(){
   cat(sep="","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",
       "\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n","\n",'
 
-
 setwd("M:/AWI 2021/Triple B Project")
 
 data=AWIExcelLoader(Excelname = "PG2208_raw_data.xlsx",AgeTxtName = "PG2208_77_ages.txt",FixFormat = T)
@@ -48,7 +47,6 @@ MasterData$Element=Element[,2:dim(Element)[2]]
 MasterData$GrainSize=GrainSize[,2:dim(GrainSize)[2]]
 MasterData$Mineral=Mineral[,3:dim(Mineral)[2]]
 MasterData$Organic=Organic[,2:dim(Organic)[2]]
-
 
 
   '
