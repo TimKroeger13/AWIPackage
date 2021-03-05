@@ -21,7 +21,7 @@ FolderCreater=function(data,format="collective"){
 
       for(i in 1:length(ls(data))){
 
-        TempMainName=List[i]
+        TempMainName=names(data)[i]
 
         TempData=data[[i]]
 

@@ -4,12 +4,12 @@
 \alias{ListCorrelation}
 \title{ListCorrelation}
 \usage{
-ListCorrelation(Main, List, thick = 50, offset = 2000)
+ListCorrelation(main, dataAsList, thick = 50, offset = 2000)
 }
 \arguments{
-\item{Main}{Vector that consists of an age and data vector. c(Age,Vector).}
+\item{main}{Vector from FolderCreater..}
 
-\item{List}{List of Value from FolderCreater.}
+\item{dataAsList}{List of Value from FolderCreater.}
 
 \item{thick}{Thickness of age intervals to interpolate to.}
 
