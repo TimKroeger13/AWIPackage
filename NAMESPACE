@@ -3,6 +3,7 @@
 export(AWIExcelLoader)
 export(CodeforBoris)
 export(FilterDiscard)
+export(FolderCreater)
 export(InterpolateVector)
 export(LoadMultivar)
 export(VectorCorrelation)
