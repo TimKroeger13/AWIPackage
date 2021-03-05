@@ -7,18 +7,13 @@
 #'If format="segment" it is expected that there are always alternating ages and values next to each other.\cr\cr
 #'Starting with the age.\cr
 #'Example: Age...V1...Age...V2...
-#'@param SegmentNames The name of the segments if format="segment" under which they will be listed.
 #'@return Returns a folder structure based on lists.
 #'@author Tim Kröger
 #'@note This function has only been developed for the Alfred Wegener Institute Helmholtz Centre for Polar and Marine Research and should therefore only be used in combination with their database.
 
-FolderCreater=function(data,format="collective",SegmentNames="other"){
+FolderCreater=function(data,format="collective"){
 
-  if(!exists("folder")){
-
-    folder=list()
-
-  }
+  folder=list()
 
   if(is.list(data)){
 
@@ -26,7 +21,7 @@ FolderCreater=function(data,format="collective",SegmentNames="other"){
 
       for(i in 1:length(ls(data))){
 
-        TempMainName=ls(data)[i]
+        TempMainName=List[i]
 
         TempData=data[[i]]
 
@@ -60,9 +55,12 @@ FolderCreater=function(data,format="collective",SegmentNames="other"){
         PrepDataForFolder=data[,k]
         names(PrepDataForFolder)=data[,i]
 
-        folder[[SegmentNames]][[TempNames[k]]]=PrepDataForFolder
+        folder[[TempNames[k]]]=PrepDataForFolder
 
       }
     }
   }
+
+  return(folder)
+
 }

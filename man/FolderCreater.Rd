@@ -4,7 +4,7 @@
 \alias{FolderCreater}
 \title{FolderCreater}
 \usage{
-FolderCreater(data, format = "collective", SegmentNames = "other")
+FolderCreater(data, format = "collective")
 }
 \arguments{
 \item{data}{Data sheets in with ages and values to be sorted in.}
@@ -14,8 +14,6 @@ If format="collective" it is expected that the first column contains an age and 
 If format="segment" it is expected that there are always alternating ages and values next to each other.\cr\cr
 Starting with the age.\cr
 Example: Age...V1...Age...V2...}
-
-\item{SegmentNames}{The name of the segments if format="segment" under which they will be listed.}
 }
 \value{
 Returns a folder structure based on lists.
