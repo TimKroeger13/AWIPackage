@@ -27,7 +27,7 @@ AddIntervalsToFolder = function(ListCorrelation,intervall=0.05){
       k=k+1
       z=z+1
 
-      if (j>(LimitValue-DistanceToTop) && j<(LimitValue+DistanceToTop)){
+      if (abs(j)>(LimitValue-DistanceToTop) && abs(j)<(LimitValue+DistanceToTop)){
 
         value[k]=j
         age[k]=as.numeric(names(ListCorrelation[[i]][[1]][z]))
