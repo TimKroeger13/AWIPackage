@@ -1,7 +1,7 @@
 #'ListCorrelation
 #'@description Calculates with two vectors all correlations with time lag.
 #'@export
-#'@param main Vector from FolderCreater..
+#'@param main Vector from FolderCreater.
 #'@param dataAsList List of Value from FolderCreater.
 #'@param thick Thickness of age intervals to interpolate to.
 #'@param offset Size of the area in which all correlations are calculated. must be dividable by the thickness!

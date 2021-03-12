@@ -97,6 +97,26 @@ PlotDeviation=function(data,thick,offset,plotName="",colors=c("black")){
     }
   }
 
+  value=NA
+  age=NA
+
+  for(h in 1:length(ls(data))){
+
+    korrelations=data[[h]]
+
+    for (i in 1:length(ls(korrelations))){
+
+      value[i]=korrelations[[i]][[4]]
+      age[i]=as.numeric(names(korrelations[[i]][[4]]))
+
+    }
+
+    textoutput[length(textoutput)+1]=paste("\nMean Points ",names(data)[h]," :","\nValue = ",round(mean(value),digits = 4),
+                                           "\nAge = ",round(mean(age),digits = 0),"\n",sep="")
+
+  }
+
+
   cat(textoutput,sep="")
 
 }

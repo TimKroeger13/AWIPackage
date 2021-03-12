@@ -37,9 +37,9 @@ VectorCorrelationAll = function(x,y,thick=50,offset=2000){
 
   names(TempVector)=NameVecor
   TempMin=min(TempVector)
-  names(TempMin)=NameVecor[which(TempVector %in% TempMin)]
+  names(TempMin)=NameVecor[which(TempVector %in% TempMin)][1]
   TempMax=max(TempVector)
-  names(TempMax)=NameVecor[which(TempVector %in% TempMax)]
+  names(TempMax)=NameVecor[which(TempVector %in% TempMax)][1]
 
   out$main=TempVector
   out$max=TempMax
