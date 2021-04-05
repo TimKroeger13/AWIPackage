@@ -145,7 +145,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
     if(sum(toupper(Tables)=="DIATOM")>0){
 
       Diatom=DeleteNaRows(Diatom)
-      Diatom[,3:dim(Diatom)[2]]=clr(Diatom[,3:dim(Diatom)[2]])
+      Diatom[,3:dim(Diatom)[2]]=clr(Diatom[,3:dim(Diatom)[2]],na.rm = TRUE)
 
     }
 
@@ -168,7 +168,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
 
         i=i+1
 
-        if(!grepl("Area",colnames(Element)[i], fixed = TRUE)){
+        if(!grepl("_Area",colnames(Element)[i], fixed = TRUE)){
 
           Element=Element[,-i]
 
@@ -177,7 +177,7 @@ AWIExcelLoader = function(Excelname,AgeTxtName=NULL,Tables=c("Organic","Element"
         }
       }
 
-      Element[,2:dim(Element)[2]]=clr(Element[,2:dim(Element)[2]])
+      Element[,2:dim(Element)[2]]=clr(Element[,2:dim(Element)[2]],na.rm = TRUE)
 
     }
   }
